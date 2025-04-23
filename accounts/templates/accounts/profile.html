@@ -337,7 +337,7 @@
                 <div class="profile">
                     <div class="profile-bubble" id="profile-bubble">{{ user.username|slice:":1" }}</div>
                     <div class="dropdown" id="dropdown">
-                        <p>Welcome, {{ user.username }}</p>
+                        <p>{{ user.username }}</p>
                         <a href="{% url 'edit_profile' %}" target="content-frame">Profile</a>
                         <form action="{% url 'logout' %}" method="POST">
                             {% csrf_token %}
