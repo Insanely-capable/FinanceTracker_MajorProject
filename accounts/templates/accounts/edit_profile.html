@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - FinSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        /* Top Navigation Bar */
+        .nav-bar {
+            width: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-bar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Profile Info Section */
+        .profile-info {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.5s ease;
+        }
+
+        .profile-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3498db, #2ecc71);
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-info.active {
+            display: block;
+        }
+
+        .profile-info h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .profile-info h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            background: white;
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            background: white;
+            border: 2px dashed #e1e8ed;
+            cursor: pointer;
+        }
+
+        .form-group input[type="file"]:hover {
+            border-color: #3498db;
+        }
+
+        button {
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Notification Styling */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            z-index: 1000;
+            display: none;
+            animation: slideInRight 0.5s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideInRight {
+            from { 
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to { 
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        /* Budget Form Specific Styling */
+        #budget .form-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        #budget input {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        /* Password Form Specific Styling */
+        #password .form-group input {
+            padding-right: 40px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-bar {
+                padding: 15px 10px;
+            }
+
+            .nav-bar a {
+                padding: 10px 20px;
+                font-size: 14px;
+                width: calc(50% - 10px);
+                text-align: center;
+            }
+
+            .main-content {
+                padding: 0 15px;
+            }
+
+            .profile-info {
+                padding: 20px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                font-size: 14px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-bar a {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <div class="nav-bar">
+        <a href="javascript:void(0);" onclick="showForm('username')">Edit Username</a>
+        <a href="javascript:void(0);" onclick="showForm('budget')">Set Budget</a>
+        <a href="javascript:void(0);" onclick="showForm('password')">Change Password</a>
+        <a href="javascript:void(0);" onclick="showForm('profile_picture')">Add Profile Picture</a>
+        <a href="javascript:void(0);" onclick="showForm('additional_info')">Additional Info</a>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Forms -->
+        <div id="username" class="profile-info">
+            <h2>Edit Username</h2>
+            <form method="POST" onsubmit="handleSubmit(event, this)">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username_input">Edit Username</label>
+                    <input type="text" id="username_input" name="username" value="{{ user.username }}" required>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Form to Set Budget -->
+        <div id="budget" class="profile-info">
+            <h2>Set Budgets</h2>
+            <form id="budgetForm" method="POST" action="/set-budget/" onsubmit="handleBudgetSubmit(event)">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="food_budget_input">Food Budget</label>
+                    <input 
+                        type="number" 
+                        id="food_budget_input" 
+                        name="food_budget" 
+                        required 
+                        placeholder="Enter food budget" 
+                        value="{{ user.profile.food_budget|default_if_none:0 }}">
+                </div>
+                <div class="form-group">
+                    <label for="entertainment_budget_input">Entertainment Budget</label>
+                    <input 
+                        type="number" 
+                        id="entertainment_budget_input" 
+                        name="entertainment_budget" 
+                        required 
+                        placeholder="Enter entertainment budget" 
+                        value="{{ user.profile.entertainment_budget|default_if_none:0 }}">
+                </div>
+                <div class="form-group">
+                    <label for="utilities_budget_input">Utilities Budget</label>
+                    <input 
+                        type="number" 
+                        id="utilities_budget_input" 
+                        name="utilities_budget" 
+                        required 
+                        placeholder="Enter utilities budget" 
+                        value="{{ user.profile.utilities_budget|default_if_none:0 }}">
+                </div>
+                <div class="form-group">
+                    <label for="others_budget_input">Others Budget</label>
+                    <input 
+                        type="number" 
+                        id="others_budget_input" 
+                        name="others_budget" 
+                        required 
+                        placeholder="Enter other budgets" 
+                        value="{{ user.profile.others_budget|default_if_none:0 }}">
+                </div>
+                <button type="submit">Save Budgets</button>
+            </form>
+        </div>
+
+        <!-- Form to Change Password -->
+        <div id="password" class="profile-info">
+            <h2>Change Password</h2>
+            <form method="POST" onsubmit="handlePasswordSubmit(event)">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="old_password_input">Old Password</label>
+                    <input type="password" id="old_password_input" name="old_password" placeholder="Enter your old password" required>
+                </div>
+                <div class="form-group">
+                    <label for="password_input">New Password</label>
+                    <input type="password" id="password_input" name="password" placeholder="Enter new password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password_input">Confirm New Password</label>
+                    <input type="password" id="confirm_password_input" name="confirm_password" placeholder="Confirm new password" required>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Form to Add Profile Picture -->
+        <div id="profile_picture" class="profile-info">
+            <h2>Add Profile Picture</h2>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="profile_picture_input">Upload Profile Picture</label>
+                    <input type="file" id="profile_picture_input" name="profile_picture" accept="image/*">
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Form to Add Additional Information -->
+        <div id="additional_info" class="profile-info">
+            <h2>Additional Information</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="additional_info_input">Tell us something more about yourself...</label>
+                    <textarea id="additional_info_input" name="additional_info" rows="4">{{ user.profile.additional_info }}</textarea>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- Notification -->
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script>
+        function showForm(formId) {
+            const forms = document.querySelectorAll('.profile-info');
+            forms.forEach(form => form.classList.remove('active'));
+            document.getElementById(formId).classList.add('active');
+        }
+    
+        function hideProfileForm() {
+            const forms = document.querySelectorAll('.profile-info');
+            forms.forEach(form => form.classList.remove('active'));
+        }
+    
+        // Function to handle Edit Username form submission
+        function handleSubmit(event, form) {
+        event.preventDefault();
+        const formData = new FormData(form);
+
+        fetch(form.action || '/edit-username/', {
+            method: form.method || 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}', // Ensure CSRF token is included
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error(`Error: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response Data:', data); // Debugging
+            if (data.success) {
+                showNotification(data.message, 'success');
+                hideProfileForm();
+            } else {
+                showNotification(data.message || 'Failed to update username.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+            showNotification('Username already exists, Please try again.', 'error');
+        });
+        }
+        function handleBudgetSubmit(event) {
+        event.preventDefault();
+
+        const data = {
+            food_budget: parseFloat(document.getElementById('food_budget_input').value),
+            entertainment_budget: parseFloat(document.getElementById('entertainment_budget_input').value),
+            utilities_budget: parseFloat(document.getElementById('utilities_budget_input').value),
+            others_budget: parseFloat(document.getElementById('others_budget_input').value),
+        };
+
+        fetch('/set-budget/', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification(data.message, 'success');
+            } else {
+                showNotification(data.message || 'Failed to update budgets.', 'error');
+            }
+        })
+        .catch(() => {
+            showNotification('Failed to update budgets. Please try again.', 'error');
+        });
+    }
+
+    function loadBudgetValues() {
+        fetch('/set-budget/', {
+            method: 'GET',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('food_budget_input').value = data.data.food_budget || 0;
+                document.getElementById('entertainment_budget_input').value = data.data.entertainment_budget || 0;
+                document.getElementById('utilities_budget_input').value = data.data.utilities_budget || 0;
+                document.getElementById('others_budget_input').value = data.data.others_budget || 0;
+            } else {
+                showNotification(data.message || 'Failed to load budgets.', 'error');
+            }
+        })
+        .catch(() => {
+            showNotification('Failed to load budgets. Please try again.', 'error');
+        });
+    }
+
+    document.getElementById('budget').addEventListener('click', loadBudgetValues);
+
+
+    
+        // Function to handle password update
+        function handlePasswordSubmit(event) {
+            event.preventDefault();
+            const oldPassword = document.getElementById('old_password_input').value;
+            const newPassword = document.getElementById('password_input').value;
+            const confirmPassword = document.getElementById('confirm_password_input').value;
+    
+            if (newPassword !== confirmPassword) {
+                showNotification('New password and confirm password do not match.', 'error');
+                return;
+            }
+    
+            const data = { old_password: oldPassword, new_password: newPassword };
+    
+            fetch('/change-password/', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(data.message, 'success');
+                    hideProfileForm();
+                } else {
+                    showNotification(data.message || 'Failed to update password.', 'error');
+                }
+            })
+            .catch(() => {
+                showNotification('Failed to update password. Please try again.', 'error');
+            });
+        }
+    
+        // Function to display notifications
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+    
+            // Apply type class (success/error) and update the message
+            notification.className = `notification ${type}`;
+            notification.innerText = message;
+    
+            // Display notification
+            notification.style.display = 'block';
+    
+            // Auto-hide notification after 3 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+    
+</body>
+</html>

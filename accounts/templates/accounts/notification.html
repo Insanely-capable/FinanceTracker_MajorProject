@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Notifications - FinSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 30px;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-top: 40px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+
+        /* General tile styles */
+        .tile {
+            width: 100%;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: white;
+        }
+
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .tile h1, .tile h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .tile h1 {
+            font-size: 1.8rem;
+        }
+        
+        .tile h2 {
+            font-size: 1.5rem;
+        }
+        
+        .tile h1::after, .tile h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+        
+        .tile p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .tile p strong {
+            font-weight: 600;
+        }
+
+        .progress-container {
+            width: 100%;
+            margin: 20px auto;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 15px;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar-budget {
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 10px;
+        }
+
+        .progress-bar-expenses {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            position: absolute;
+            top: 0;
+            left: 0;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 0.8rem;
+        }
+
+        /* CSS for different progress levels */
+        .progress-bar-low {
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+        }
+
+        .progress-bar-medium {
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+        }
+
+        .progress-bar-high {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        /* Colored tiles */
+        .colored-tile {
+            color: white;
+        }
+        
+        .colored-tile h2 {
+            color: white;
+        }
+        
+        .colored-tile h2::after {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .colored-tile p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .colored-tile p strong {
+            color: white;
+        }
+
+        /* Grid layout for 2x2 matrix */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            width: 100%;
+            margin: 30px auto;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.5s ease-in-out;
+        }
+
+        .grid-container.visible {
+            visibility: visible;
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* View alerts link styling */
+        .view-alerts-link {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            background: rgba(52, 152, 219, 0.8);
+            padding: 12px 25px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .view-alerts-link:hover {
+            background: rgba(52, 152, 219, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Toggle button styling */
+        #toggleButton {
+            cursor: pointer;
+        }
+        
+        #toggleButton .toggle-text {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(0, 0, 0, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        #toggleButton:hover .toggle-text {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .view-alerts-link {
+                top: 15px;
+                right: 15px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>Expense Notifications</h1>
+        </div>
+        
+        <!-- Anchor Tag for Alerts Page -->
+        <a href="{% url 'alerts' %}" class="view-alerts-link">View Alerts and Warnings</a>
+
+        <!-- Tile for Total Budget and Total Expenses -->
+        <div class="tile">
+            <h1>Total Budget vs Total Expenses</h1>
+            <p><strong>Total Expenses: ₹{{ total_expenses|floatformat:1 }}</strong></p>
+            <p><strong>Total Budget: ₹{{ total_budget|floatformat:1 }}</strong></p>
+        </div>
+
+        <!-- Tile for Expense vs Budget Progress Bar -->
+        <div id="toggleButton" class="tile colored-tile" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
+            <span class="toggle-text">Click for Detailed Breakdown</span>
+            <h1>Expense vs Budget</h1>
+            <div class="progress-container">
+                <div class="progress-bar-budget" style="width: 100%;"></div>
+                <div class="progress-bar-expenses {{ progress_class_overall }}" style="width: {{ progress_bar_width_overall }}%;">
+                    ₹{{ total_expenses|floatformat:1 }}
+                </div>
+            </div>
+            <p><strong>Total Budget: ₹{{ total_budget|floatformat:1 }}</strong></p>
+        </div>
+
+        <!-- Grid container for 2x2 layout -->
+        <div class="grid-container" id="detailsGrid">
+            <!-- Tile for Food Budget and Food Expenses -->
+            <div class="tile colored-tile" style="background: linear-gradient(135deg, #9C27B0, #7B1FA2);">
+                <h2>Food Expenses vs Budget</h2>
+                <div class="progress-container">
+                    <div class="progress-bar-budget" style="width: 100%;"></div>
+                    <div class="progress-bar-expenses {{ progress_class_food }}" style="width: {{ progress_bar_width_food }}%;">
+                        ₹{{ total_food_expenses|floatformat:1 }}
+                    </div>
+                </div>
+                <p><strong>Food Budget: ₹{{ total_food_budget|floatformat:1 }}</strong></p>
+            </div>
+
+            <!-- Tile for Utilities Budget and Utilities Expenses -->
+            <div class="tile colored-tile" style="background: linear-gradient(135deg, #FFC107, #FFA000);">
+                <h2>Utilities Expenses vs Budget</h2>
+                <div class="progress-container">
+                    <div class="progress-bar-budget" style="width: 100%;"></div>
+                    <div class="progress-bar-expenses {{ progress_class_utilities }}" style="width: {{ progress_bar_width_utilities }}%;">
+                        ₹{{ total_utilities_expenses|floatformat:1 }}
+                    </div>
+                </div>
+                <p><strong>Utilities Budget: ₹{{ total_utilities_budget|floatformat:1 }}</strong></p>
+            </div>
+
+            <!-- Tile for Entertainment Budget and Entertainment Expenses -->
+            <div class="tile colored-tile" style="background: linear-gradient(135deg, #FF5722, #E64A19);">
+                <h2>Entertainment Expenses vs Budget</h2>
+                <div class="progress-container">
+                    <div class="progress-bar-budget" style="width: 100%;"></div>
+                    <div class="progress-bar-expenses {{ progress_class_entertainment }}" style="width: {{ progress_bar_width_entertainment }}%;">
+                        ₹{{ total_entertainment_expenses|floatformat:1 }}
+                    </div>
+                </div>
+                <p><strong>Entertainment Budget: ₹{{ total_entertainment_budget|floatformat:1 }}</strong></p>
+            </div>
+
+            <!-- Tile for Others Budget and Others Expenses -->
+            <div class="tile colored-tile" style="background: linear-gradient(135deg, #4CAF50, #388E3C);">
+                <h2>Others Expenses vs Budget</h2>
+                <div class="progress-container">
+                    <div class="progress-bar-budget" style="width: 100%;"></div>
+                    <div class="progress-bar-expenses {{ progress_class_others }}" style="width: {{ progress_bar_width_others }}%;">
+                        ₹{{ total_others_expenses|floatformat:1 }}
+                    </div>
+                </div>
+                <p><strong>Others Budget: ₹{{ total_others_budget|floatformat:1 }}</strong></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('toggleButton');
+            const detailsGrid = document.getElementById('detailsGrid');
+
+            toggleButton.addEventListener('click', function() {
+                if (detailsGrid.classList.contains('visible')) {
+                    // Hide the grid and scroll to the top of the page
+                    detailsGrid.classList.remove('visible');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    // Show the grid and scroll to it
+                    detailsGrid.classList.add('visible');
+                    detailsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - FinSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://res.cloudinary.com/dsupeophd/image/upload/v1745311179/freepik__the-style-is-modern-and-it-is-a-detailed-illustrat__95303_mu9hju.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: -1;
+        }
+        
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 400px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+        
+        .form-container h2 {
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .form-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+        
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-container label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-container label::before {
+            content: '•';
+            color: #3498db;
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .form-container input {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        .form-container input {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    width: 100%;
+}
+        
+        .form-container input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+            background-color: #fff;
+        }
+        
+        .form-container button {
+            padding: 14px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #3498db, #2ecc71);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+        
+        .form-container button:active {
+            transform: translateY(0);
+        }
+        
+        .form-container button span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .form-container button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
+            transition: all 0.4s ease;
+        }
+        
+        .form-container button:hover::before {
+            left: 100%;
+        }
+        
+        .top-right-button {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 10;
+        }
+        
+        .top-right-button a {
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .top-right-button a:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .top-right-button a::before {
+            content: '←';
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #555;
+            font-size: 14px;
+            position: relative;
+            padding-top: 15px;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 30%;
+            right: 30%;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #2ecc71;
+        }
+        
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-toggle {
+            cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    transition: all 0.3s ease;
+    user-select: none;
+    margin-top: -10px;
+        }
+        
+        .password-toggle:hover {
+            color: #3498db;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-container {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        /* Error message styling */
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-message::before {
+            content: '!';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            margin-right: 8px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-right-button">
+        <a href="{% url 'home' %}">Home</a>
+    </div>
+
+    <div class="form-container">
+        <h2>Create Account</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Username Input -->
+            <label for="username">Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+            <div class="error-message">{{ form.username.errors }}</div>
+            {% endif %}
+
+            <!-- Password Input -->
+            <label for="password">Password</label>
+            <div class="password-container">
+                {{ form.password }}
+                <span class="password-toggle" id="toggle-password-register">🙈</span>
+            </div>
+            {% if form.password.errors %}
+            <div class="error-message">{{ form.password.errors }}</div>
+            {% endif %}
+
+            <!-- Confirm Password Input -->
+            <label for="confirm_password">Confirm Password</label>
+            <div class="password-container">
+                {{ form.confirm_password }}
+                <span class="password-toggle" id="toggle-confirm-password-register">🙈</span>
+            </div>
+            {% if form.confirm_password.errors %}
+            <div class="error-message">{{ form.confirm_password.errors }}</div>
+            {% endif %}
+
+            <button type="submit"><span>Create Account</span></button>
+        </form>
+
+        <div class="footer">
+            <p>Already have an account? <a href="{% url 'login' %}">Sign In</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const togglePassword = document.getElementById('toggle-password-register');
+            const passwordInput = document.querySelector('input[name="password"]');
+            const toggleConfirmPassword = document.getElementById('toggle-confirm-password-register');
+            const confirmPasswordInput = document.querySelector('input[name="confirm_password"]');
+
+            togglePassword.addEventListener('click', function () {
+                // Toggle password visibility
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    togglePassword.textContent = "😳";  // Change icon
+                } else {
+                    passwordInput.type = "password";
+                    togglePassword.textContent = "🙈";  // Change icon
+                }
+            });
+
+            toggleConfirmPassword.addEventListener('click', function () {
+                // Toggle confirm password visibility
+                if (confirmPasswordInput.type === "password") {
+                    confirmPasswordInput.type = "text";
+                    toggleConfirmPassword.textContent = "😳";  // Change icon
+                } else {
+                    confirmPasswordInput.type = "password";
+                    toggleConfirmPassword.textContent = "🙈";  // Change icon
+                }
+            });
+        });
+    </script>
+</body>
+</html>

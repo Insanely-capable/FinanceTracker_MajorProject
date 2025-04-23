@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Alerts - FinSmart</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 30px;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-top: 40px;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+        
+        /* Tile styles with modern design */
+        .tile {
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            background: white;
+        }
+        
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .tile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+        
+        .tile h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .tile p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        /* Warning tile style */
+        .warning {
+            border: 1px solid #ffeeba;
+        }
+        
+        .warning::before {
+            background-color: #FF9800;
+        }
+        
+        .warning h2 {
+            color: #856404;
+        }
+        
+        .warning p {
+            color: #856404;
+        }
+        
+        /* Alert tile style */
+        .alert {
+            border: 1px solid #f8d7da;
+        }
+        
+        .alert::before {
+            background-color: #dc3545;
+        }
+        
+        .alert h2 {
+            color: #721c24;
+        }
+        
+        .alert p {
+            color: #721c24;
+        }
+        
+        /* Success tile style */
+        .success {
+            border: 1px solid #c3e6cb;
+        }
+        
+        .success::before {
+            background-color: #28a745;
+        }
+        
+        .success h2 {
+            color: #155724;
+        }
+        
+        .success p {
+            color: #155724;
+        }
+        
+        /* Budget details styling */
+        .budget-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .budget-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .budget-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .budget-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        /* Back button styling */
+        .back-link {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            background: rgba(52, 152, 219, 0.8);
+            padding: 12px 25px;
+            border-radius: 30px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .back-link:hover {
+            background: rgba(52, 152, 219, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-link::before {
+            content: '←';
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        /* Progress bar styling */
+        .progress-container {
+            margin-top: 15px;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .warning .progress-bar {
+            background: linear-gradient(90deg, #ffcc80, #ff9800);
+        }
+        
+        .alert .progress-bar {
+            background: linear-gradient(90deg, #ff8a80, #dc3545);
+        }
+        
+        .success .progress-bar {
+            background: linear-gradient(90deg, #a5d6a7, #28a745);
+        }
+        
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .tile {
+            animation: fadeInUp 0.5s ease forwards;
+            animation-delay: calc(var(--animation-order) * 0.1s);
+            opacity: 0;
+        }
+        
+        /* No alerts message */
+        .no-alerts {
+            text-align: center;
+            padding: 40px 0;
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>Expense Alerts</h1>
+        </div>
+        
+        <!-- Warning Tiles (Orange) -->
+        {% if food_status == 'warning' %}
+        <div class="tile warning" style="--animation-order: 1">
+            <h2>Warning: Food Budget Near Limit</h2>
+            <p>You've used a significant portion of your food budget for this period.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_food_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_food_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Usage</div>
+                    <div class="budget-value">{{ food_percentage|floatformat:0 }}%</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {{ food_percentage }}%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if entertainment_status == 'warning' %}
+        <div class="tile warning" style="--animation-order: 2">
+            <h2>Warning: Entertainment Budget Near Limit</h2>
+            <p>You're approaching your entertainment budget limit.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_entertainment_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_entertainment_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Usage</div>
+                    <div class="budget-value">{{ entertainment_percentage|floatformat:0 }}%</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {{ entertainment_percentage }}%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if utilities_status == 'warning' %}
+        <div class="tile warning" style="--animation-order: 3">
+            <h2>Warning: Utilities Budget Near Limit</h2>
+            <p>Your utilities expenses are approaching the budget limit.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_utilities_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_utilities_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Usage</div>
+                    <div class="budget-value">{{ utilities_percentage|floatformat:0 }}%</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {{ utilities_percentage }}%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if others_status == 'warning' %}
+        <div class="tile warning" style="--animation-order: 4">
+            <h2>Warning: Other Expenses Near Limit</h2>
+            <p>Your miscellaneous expenses are approaching the budget limit.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_others_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_others_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Usage</div>
+                    <div class="budget-value">{{ others_percentage|floatformat:0 }}%</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {{ others_percentage }}%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Alert Tiles (Red) -->
+        {% if food_status == 'alert' %}
+        <div class="tile alert" style="--animation-order: 1">
+            <h2>Alert: Food Budget Exceeded</h2>
+            <p>You've exceeded your food budget for this period.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_food_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_food_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Overspent</div>
+                    <div class="budget-value">₹{{ food_overspent|floatformat:1 }}</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if entertainment_status == 'alert' %}
+        <div class="tile alert" style="--animation-order: 2">
+            <h2>Alert: Entertainment Budget Exceeded</h2>
+            <p>You've exceeded your entertainment budget for this period.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_entertainment_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_entertainment_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Overspent</div>
+                    <div class="budget-value">₹{{ entertainment_overspent|floatformat:1 }}</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if utilities_status == 'alert' %}
+        <div class="tile alert" style="--animation-order: 3">
+            <h2>Alert: Utilities Budget Exceeded</h2>
+            <p>You've exceeded your utilities budget for this period.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_utilities_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_utilities_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Overspent</div>
+                    <div class="budget-value">₹{{ utilities_overspent|floatformat:1 }}</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if others_status == 'alert' %}
+        <div class="tile alert" style="--animation-order: 4">
+            <h2>Alert: Other Expenses Exceeded</h2>
+            <p>You've exceeded your budget for miscellaneous expenses.</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Expenses</div>
+                    <div class="budget-value">₹{{ total_others_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Budget</div>
+                    <div class="budget-value">₹{{ total_others_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Overspent</div>
+                    <div class="budget-value">₹{{ others_overspent|floatformat:1 }}</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: 100%;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Success Tile (Green) when no alert or warning exists -->
+        {% if food_status != 'warning' and food_status != 'alert' and entertainment_status != 'warning' and entertainment_status != 'alert' and utilities_status != 'warning' and utilities_status != 'alert' and others_status != 'warning' and others_status != 'alert' %}
+        <div class="tile success" style="--animation-order: 1">
+            <h2>All Budgets Within Limits</h2>
+            <p>All your expenses are within the allocated budgets. Keep up the good work!</p>
+            
+            <div class="budget-details">
+                <div class="budget-item">
+                    <div class="budget-label">Total Expenses</div>
+                    <div class="budget-value">₹{{ total_expenses|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Total Budget</div>
+                    <div class="budget-value">₹{{ total_budget|floatformat:1 }}</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-label">Remaining</div>
+                    <div class="budget-value">₹{{ remaining_budget|floatformat:1 }}</div>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" style="width: {{ total_percentage|default:0 }}%;"></div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Back to Notifications Link -->
+    <a href="{% url 'notification' %}" class="back-link">Back to Notifications</a>
+
+    <script>
+        // Calculate percentages for progress bars
+        document.addEventListener('DOMContentLoaded', function() {
+            // This script will run if you need to calculate percentages client-side
+            // For now, we're assuming the percentages are calculated in the view
+        });
+    </script>
+</body>
+</html>
